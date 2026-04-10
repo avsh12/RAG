@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rag_text_search"
+version = "0.1"
+description = "A RAG pipeline to answer question based on the provided text."
+readme = "README.md"
+requires-python = ">=3.9"
+
+# ✅ ONLY Third-Party Libraries go here
+dependencies = ["qdrant_client", "numpy>=1.24", "pandas>=2.0", "sqlalchemy", "pyyaml", "requests", "requests_cache", "pyyaml", "retry_requests"] # Add your libs here
+
+[tool.setuptools.packages.find]
+where = ["src"]  # Tells Python code is inside src
+include = ["*"]
+
+# FastAPI CLI looks here
+[tool.fastapi]
+entrypoint = "src.api.main:app"

@@ -1,0 +1,34 @@
+#POST http://localhost:8080/v1/chat/completions
+# Content-Type: application/json
+
+# {"messages": [{"role": "user", "content": "Who are you? How can you exist? Explain."}], "streams": "False"}
+
+# API key generation
+# POST http://127.0.0.1:8000/api-keys/
+# Content-Type: application/json
+
+# {"email": "maon128@email.com"}
+
+# "mycompany@email.com": "YoFCtibxoVwhAklnjkLCAXSsDdnQfir-rchVMmLPRAU"
+# "myram@email.com": "dz8GnsEjgCqIwudV0aZoWAXSJ4XjrrRRfL0HlR9HNIo"
+# "myramuser@email.com": "XUOuKqFqHFAwJxYEthTr6i95w0tsOsUGhRB4OnkUeQ4"
+# "myramuser12@email.com": "uGI9-vuephjJxaKcWFuz4Z72a3KgJgLd6ky4QArWBmY"
+# "maon128@email.com": "Pwon6n6U_eq0GRh9FP6ILLzTNRRdX7JemE5zequ3ajE"
+
+# API key validation
+# GET http://127.0.0.1:8000/verify-key
+# email: mycompany@email.com
+# api-key: YoFCtibxoVwhAklnjkLCAXSsDdnQfir-rchVMmLPRAU
+
+# File upload
+POST http://127.0.0.1:8000/file
+Content-Type: multipart/form-data; boundary=----d3ednh3ufnhquod13
+
+----d3ednh3ufnhquod13
+Content-Disposition: form-data; name="username"
+
+Ramp
+----d3ednh3ufnhquod13
+Content-Disposition: form-data; name="cat_facts.txt"
+
+#[Binary data of txt file]
