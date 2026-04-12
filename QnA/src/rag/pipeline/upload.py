@@ -1,6 +1,8 @@
-from qdrant_client import QdrantClient
+from itertools import repeat
+
+from qdrant_client import QdrantClient, models
 from rag.utils.embedding import embed_text
-from rag.utils.raw_database import create_rdb
+from Projects.RAG.QnA.src.rag.utils.database import create_rdb
 
 
 def upload_pipeline(

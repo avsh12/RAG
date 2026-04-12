@@ -1,0 +1,27 @@
+import logging
+
+from https import Client, HTTPStatusError, Limits
+
+
+class LLMClient:
+    def __init__(self, path: str = None, timeout: float = 45, limits: int = 50):
+        self.session = Client(
+            timeout=timeout, limits=Limits(max_keepalive_connections=limits)
+        )
+        self.path = path
+
+    def model(self, text: str) -> str:
+        payload = {"messages": [{"role": "user", "content": text}], "streams": False}
+
+        response = self.session.post(url=self.path, json=payload)
+
+        try:
+            response.raise_for_status()
+        except HTTPStatusError as error:
+            logging.error(f"LLM server failed: {response.status_code}")
+            raise error
+
+        response = response.json()
+        response = [response["message"]["content"] for response in response["choices"]]
+
+        return response

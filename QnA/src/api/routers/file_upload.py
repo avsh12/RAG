@@ -5,9 +5,10 @@ import uuid
 from pathlib import Path
 from typing import Annotated
 
-from fastapi import APIRouter, File, HTTPException, UploadFile, status
+from fastapi import APIRouter, BackgroundTasks, File, HTTPException, UploadFile, status
+from rag.pipeline.upload import rag_ingestion
 
-from .file_validation import validate_file
+from utils.file_validation import validate_file
 
 
 def generate_filename(filename: Path) -> Path:
@@ -23,7 +24,7 @@ router = APIRouter(tags=["File Uploading"])
 
 
 @router.post("/file")
-def save_file(file: UploadFile = File()):
+def save_file(background_tasks: BackgroundTasks, file: UploadFile = File()):
     # 10MB limit
     MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024
     validation_status = validate_file(file, MAX_FILE_SIZE_BYTES)
@@ -34,7 +35,7 @@ def save_file(file: UploadFile = File()):
     filename = Path(file.filename)
     filename = generate_filename(filename)
 
-    db_path = Path("data/user/")
+    db_path = Path("data/user/file")
     db_path.mkdir(parents=True, exist_ok=True)
 
     filepath = db_path / filename
@@ -49,6 +50,8 @@ def save_file(file: UploadFile = File()):
         )
     finally:
         file.file.close()
+
+    background_tasks.add_task(rag_ingestion, client_id, filepath)
 
     return {
         "message": "File uploaded successfully!",

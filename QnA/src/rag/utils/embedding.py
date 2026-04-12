@@ -1,5 +1,22 @@
 import numpy as np
 import requests
+import logging
+
+
+def embed_text(client, text: list[str], return_numpy: bool = False):
+    payload = {"content": text}
+
+    response = client.post(payload=payload)
+    status = response.status_code
+
+    if status == 200:
+        response = response.json()
+        response = [x["embedding"][0] for x in response]
+        if return_numpy:
+            response = np.array(response)
+        return response
+    else:
+        logging(f"Server not responded. Error code: {status}")
 
 
 def embed_text(text: list[str], url: str, return_numpy: bool = False) -> list[list]:

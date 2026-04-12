@@ -87,17 +87,17 @@ def check_user_conflict(email: str, filepath: str) -> bool:
 
 @router.post("/api-keys")
 def generate_api_keys(user: User):
-    id = get_id(user.email)
+    client_id = get_id(user.email)
 
     apikey = secrets.token_urlsafe(32)
     hashed_apikey = hashlib.sha256(apikey.encode()).hexdigest()
 
     filepath = "data/auth/client_record.db"
     auth_status = check_user_conflict(user.email, filepath)
-    print(auth_status)
+
     if not auth_status:
         try:
-            insert_into_record(id, user.email, hashed_apikey, filepath)
+            insert_into_record(client_id, user.email, hashed_apikey, filepath)
         except sqlite3.Error:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
