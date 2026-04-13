@@ -18,6 +18,7 @@ from fastapi import (
     status,
 )
 from rag.pipeline.pipeline import RAG
+from rag.utils.config import settings
 
 router = APIRouter(tags=["File Uploading"])
 
@@ -38,9 +39,7 @@ def save_file(
     user: Annotated[User, Depends(authenticate_api)],
     file: UploadFile = File(),
 ):
-    # 10MB limit
-    MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024
-    validation_status = validate_file(file, MAX_FILE_SIZE_BYTES)
+    validation_status = validate_file(file, settings.MAX_FILE_SIZE_BYTES)
 
     if not validation_status["valid"]:
         raise HTTPException(status_code=400, detail=validation_status["errors"])
@@ -48,8 +47,8 @@ def save_file(
     filename = Path(file.filename)
     filename = generate_filename(filename)
 
-    db_path = Path("data/user/file")
-    db_path.mkdir(parents=True, exist_ok=True)
+    db_path = settings.OBJ_FILE_DB_PATH  # Path("data/user/file")
+    # db_path.mkdir(parents=True, exist_ok=True)
 
     filepath = db_path / filename
     print(f"FILEPATH: {filepath.absolute()}")

@@ -1,12 +1,11 @@
 import sqlite3
 from pathlib import Path
 
-from api.config.config import SQL_AUTH_PATH
+from rag.utils.config import settings
 
 
 def get_db():
-    print(SQL_AUTH_PATH)
-    connection = sqlite3.connect(SQL_AUTH_PATH)
+    connection = sqlite3.connect(settings.SQL_AUTH_DB_PATH)
     try:
         yield connection
     finally:

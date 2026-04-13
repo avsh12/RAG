@@ -9,7 +9,7 @@ from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel
 from rag.utils.config import settings
 
-router = APIRouter(tags=["API generation and Authentication"])
+router = APIRouter(tags=["API key generation"])
 
 # NAMESPACE = uuid.UUID("73c177ef-bc8b-42d0-9762-71f13a3b3a45")
 

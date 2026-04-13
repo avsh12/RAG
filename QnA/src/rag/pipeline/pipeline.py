@@ -90,7 +90,7 @@ class RAG:
             query=vector,
             query_filter=models.Filter(
                 must=[
-                    models.FieldCollection(
+                    models.FieldCondition(
                         key="client_id", match=models.MatchValue(value=client_id)
                     )
                 ]
@@ -98,7 +98,7 @@ class RAG:
             with_payload=True,
         )
 
-        context = [point.payload for point in context.points]
+        context = [point.payload["text"] for point in context.points]
 
         llm_response = self.query_llm(text, context)
         return {"content": llm_response, "context": context}

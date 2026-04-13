@@ -5,6 +5,7 @@
 
 #---------------------------------------------------------------------------
 # API key generation
+
 # POST http://127.0.0.1:8000/api-keys/
 # Content-Type: application/json
 
@@ -18,18 +19,16 @@
 #---------------------------------------------------------------------------
 
 # API key validation
-GET http://127.0.0.1:8000/verify-key
-email: mycompany@email.com
-api-key: C1RUxMUqpidbDM-Za3a9-fLiHcqeBk_4NxDsNG5NuVQ
+
+# GET http://127.0.0.1:8000/verify-key
+# email: mycompany@email.com
+# api-key: C1RUxMUqpidbDM-Za3a9-fLiHcqeBk_4NxDsNG5NuVQ
 
 #---------------------------------------------------------------------------
 # File upload
-# GET http://127.0.0.1:8000/verify-key
-# Content-Type: application/json
-# api-key: YoFCtibxoVwhAklnjkLCAXSsDdnQfir-rchVMmLPRAU
 
 # POST http://127.0.0.1:8000/file
-# api-key: YoFCtibxoVwhAklnjkLCAXSsDdnQfir-rchVMmLPRAU
+# api-key: C1RUxMUqpidbDM-Za3a9-fLiHcqeBk_4NxDsNG5NuVQ
 # Content-Type: multipart/form-data; boundary=MyBoundary
 
 # --MyBoundary
@@ -38,3 +37,13 @@ api-key: C1RUxMUqpidbDM-Za3a9-fLiHcqeBk_4NxDsNG5NuVQ
 
 # < ./data/cat-facts.txt
 # --MyBoundary--
+
+#--------------------------------------------------------------------------
+# Query
+
+POST http://127.0.0.1:8000/query
+api-key: C1RUxMUqpidbDM-Za3a9-fLiHcqeBk_4NxDsNG5NuVQ
+
+Content-Type: application/json
+
+{"text": "How long cats live?"}

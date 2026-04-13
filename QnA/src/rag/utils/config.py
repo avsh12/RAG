@@ -21,6 +21,10 @@ class Settings(BaseSettings):
 
     ID_NAMESPACE: UUID
 
+    COLLECTION_NAME: str
+
+    MAX_FILE_SIZE_BYTES: int
+
     @field_validator(
         "SQL_AUTH_DB_PATH", "OBJ_FILE_DB_PATH", "VECTOR_DB_PATH", mode="before"
     )
