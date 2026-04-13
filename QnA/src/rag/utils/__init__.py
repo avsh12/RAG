@@ -1,5 +1,3 @@
-from .. import clients
+from . import chunking, config, database, embedding
 
-from . import chunking, database, embedding
-
-__all__ = ["chunking", "embedding", "database", "clients"]
+__all__ = ["chunking", "embedding", "database", "config"]

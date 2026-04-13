@@ -1,6 +1,6 @@
 import logging
 
-from https import Client, HTTPStatusError, Limits
+from httpx import Client, HTTPStatusError, Limits
 from numpy import array
 
 

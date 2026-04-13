@@ -7,10 +7,11 @@ import uuid
 
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel
+from rag.utils.config import settings
 
 router = APIRouter(tags=["API generation and Authentication"])
 
-NAMESPACE = uuid.UUID("73c177ef-bc8b-42d0-9762-71f13a3b3a45")
+# NAMESPACE = uuid.UUID("73c177ef-bc8b-42d0-9762-71f13a3b3a45")
 
 logging.basicConfig(level=logging.ERROR)
 
@@ -20,7 +21,7 @@ class User(BaseModel):
 
 
 def get_id(user):
-    id = uuid.uuid5(NAMESPACE, user)
+    id = uuid.uuid5(settings.ID_NAMESPACE, user)
     return str(id)
 
 
@@ -92,7 +93,7 @@ def generate_api_keys(user: User):
     apikey = secrets.token_urlsafe(32)
     hashed_apikey = hashlib.sha256(apikey.encode()).hexdigest()
 
-    filepath = "data/auth/client_record.db"
+    filepath = settings.SQL_AUTH_DB_PATH  # "data/auth/client_record.db"
     auth_status = check_user_conflict(user.email, filepath)
 
     if not auth_status:

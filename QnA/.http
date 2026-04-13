@@ -3,32 +3,38 @@
 
 # {"messages": [{"role": "user", "content": "Who are you? How can you exist? Explain."}], "streams": "False"}
 
+#---------------------------------------------------------------------------
 # API key generation
 # POST http://127.0.0.1:8000/api-keys/
 # Content-Type: application/json
 
-# {"email": "maon128@email.com"}
+# {"email": "mycompany@email.com"}
 
-# "mycompany@email.com": "YoFCtibxoVwhAklnjkLCAXSsDdnQfir-rchVMmLPRAU"
-# "myram@email.com": "dz8GnsEjgCqIwudV0aZoWAXSJ4XjrrRRfL0HlR9HNIo"
-# "myramuser@email.com": "XUOuKqFqHFAwJxYEthTr6i95w0tsOsUGhRB4OnkUeQ4"
-# "myramuser12@email.com": "uGI9-vuephjJxaKcWFuz4Z72a3KgJgLd6ky4QArWBmY"
-# "maon128@email.com": "Pwon6n6U_eq0GRh9FP6ILLzTNRRdX7JemE5zequ3ajE"
+# "mycompany@email.com": "C1RUxMUqpidbDM-Za3a9-fLiHcqeBk_4NxDsNG5NuVQ"
+# "myram@email.com": "lTiE_rWbKjgKtcbPg2m37Tbgx-1MlPvy_ttmhYUVx0M"
+# "myramuser@email.com": "2vAJOyOJZvaWT7jFtshlhBDO3DZKHOVlRfY-oYmhDOI"
+# "myramuser12@email.com": "qtl-R6c8ldX5Gv2_0Wng8Qp0EdlqJnsroJxEhJIv2yo"
+# "maon128@email.com": "byYqaznzJ95QXRNY08Y2mHpypiqRt62_u_GVlGPRupI"
+#---------------------------------------------------------------------------
 
 # API key validation
+GET http://127.0.0.1:8000/verify-key
+email: mycompany@email.com
+api-key: C1RUxMUqpidbDM-Za3a9-fLiHcqeBk_4NxDsNG5NuVQ
+
+#---------------------------------------------------------------------------
+# File upload
 # GET http://127.0.0.1:8000/verify-key
-# email: mycompany@email.com
+# Content-Type: application/json
 # api-key: YoFCtibxoVwhAklnjkLCAXSsDdnQfir-rchVMmLPRAU
 
-# File upload
-POST http://127.0.0.1:8000/file
-Content-Type: multipart/form-data; boundary=----d3ednh3ufnhquod13
+# POST http://127.0.0.1:8000/file
+# api-key: YoFCtibxoVwhAklnjkLCAXSsDdnQfir-rchVMmLPRAU
+# Content-Type: multipart/form-data; boundary=MyBoundary
 
-----d3ednh3ufnhquod13
-Content-Disposition: form-data; name="username"
+# --MyBoundary
+# Content-Disposition: form-data; name="file"; filename="cat-facts.txt"
+# Content-Type: application/text/plain
 
-Ramp
-----d3ednh3ufnhquod13
-Content-Disposition: form-data; name="cat_facts.txt"
-
-#[Binary data of txt file]
+# < ./data/cat-facts.txt
+# --MyBoundary--

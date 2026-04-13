@@ -1,6 +1,6 @@
 import logging
 
-from https import Client, HTTPStatusError, Limits
+from httpx import Client, HTTPStatusError, Limits
 
 
 class LLMClient:
@@ -10,7 +10,7 @@ class LLMClient:
         )
         self.path = path
 
-    def model(self, text: str) -> str:
+    def model(self, text: str) -> list[str]:
         payload = {"messages": [{"role": "user", "content": text}], "streams": False}
 
         response = self.session.post(url=self.path, json=payload)
@@ -25,3 +25,6 @@ class LLMClient:
         response = [response["message"]["content"] for response in response["choices"]]
 
         return response
+
+    def close(self):
+        self.session.close()

@@ -5,10 +5,21 @@ import uuid
 from pathlib import Path
 from typing import Annotated
 
-from fastapi import APIRouter, BackgroundTasks, File, HTTPException, UploadFile, status
-from rag.pipeline.upload import rag_ingestion
+from api.routers.auth import User, authenticate_api
+from api.utils.file_validation import validate_file
+from api.utils.util import get_rag_engine
+from fastapi import (
+    APIRouter,
+    BackgroundTasks,
+    Depends,
+    File,
+    HTTPException,
+    UploadFile,
+    status,
+)
+from rag.pipeline.pipeline import RAG
 
-from utils.file_validation import validate_file
+router = APIRouter(tags=["File Uploading"])
 
 
 def generate_filename(filename: Path) -> Path:
@@ -16,15 +27,17 @@ def generate_filename(filename: Path) -> Path:
     file_extension = filename.suffix.lower()
     original_name = filename.stem
 
-    filename = f"{uuid.uuid4()}_{original_name}{file_extension}"
+    filename = Path(f"{uuid.uuid4()}_{original_name}{file_extension}")
     return filename
 
 
-router = APIRouter(tags=["File Uploading"])
-
-
 @router.post("/file")
-def save_file(background_tasks: BackgroundTasks, file: UploadFile = File()):
+def save_file(
+    background_tasks: BackgroundTasks,
+    rag: Annotated[RAG, Depends(get_rag_engine)],
+    user: Annotated[User, Depends(authenticate_api)],
+    file: UploadFile = File(),
+):
     # 10MB limit
     MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024
     validation_status = validate_file(file, MAX_FILE_SIZE_BYTES)
@@ -39,6 +52,7 @@ def save_file(background_tasks: BackgroundTasks, file: UploadFile = File()):
     db_path.mkdir(parents=True, exist_ok=True)
 
     filepath = db_path / filename
+    print(f"FILEPATH: {filepath.absolute()}")
     try:
         with open(filepath, "wb") as f:
             shutil.copyfileobj(file.file, f)
@@ -51,7 +65,7 @@ def save_file(background_tasks: BackgroundTasks, file: UploadFile = File()):
     finally:
         file.file.close()
 
-    background_tasks.add_task(rag_ingestion, client_id, filepath)
+    background_tasks.add_task(rag.ingest, user.client_id, filepath)
 
     return {
         "message": "File uploaded successfully!",

@@ -34,8 +34,10 @@ class RAG:
         if collection_name is not None:
             self.collection_name = collection_name
 
-        if not self.client.collection_exists(collection_name=self.collection_name):
-            self.client.create_collection(
+        if not self.qdrant_client.collection_exists(
+            collection_name=self.collection_name
+        ):
+            self.qdrant_client.create_collection(
                 collection_name=self.collection_name,
                 vectors_config=models.VectorParams(
                     size=self.embed_dim, distance=models.Distance.COSINE
@@ -43,9 +45,9 @@ class RAG:
                 optimizers_config=models.OptimizersConfigDiff(indexing_threshold=0),
             )
 
-    def payload_generator(client_ids: str, chunks: list[str]):
-        for id, text in zip(client_ids, chunks):
-            yield {"client_id": id, "text": text}
+    def payload_generator(self, client_ids: str, filepaths: str, chunks: list[str]):
+        for id, (filepath, text) in zip(client_ids, zip(filepaths, chunks)):
+            yield {"client_id": id, "filepath": filepath.name, "text": text}
 
     def ingest(self, client_id: str, filepath: str):
         chunked_text = chunk(filepath)
@@ -54,7 +56,9 @@ class RAG:
         self.qdrant_client.upload_collection(
             collection_name=self.collection_name,
             vectors=vectors,
-            payload=self.payload_generator(repeat(client_id), chunked_text),
+            payload=self.payload_generator(
+                repeat(client_id), repeat(filepath), chunked_text
+            ),
         )
 
     def query_llm(self, query: str, context: list[str]):
@@ -76,10 +80,10 @@ class RAG:
                                     {query}
                                    </query>"""
 
-        llm_response = self.llm_client.model(contextualized_query)
+        llm_response = self.llm_client.model(contextualized_query)[0]
         return llm_response
 
-    def query(self, client_id: str, text: str):
+    def query(self, client_id: str, text: str) -> dict:
         vector = self.embedding_client.embed_text([text])[0]
         context = self.qdrant_client.query_points(
             collection_name=self.collection_name,
@@ -97,7 +101,7 @@ class RAG:
         context = [point.payload for point in context.points]
 
         llm_response = self.query_llm(text, context)
-        return llm_response
+        return {"content": llm_response, "context": context}
 
         # self.client.create_payload_index(
         #     collection_name=self.collection_name,
