@@ -19,6 +19,6 @@ def query(
     rag: Annotated[RAG, Depends(get_rag_engine)],
     text: Annotated[str, Body()],
 ):
-    response = rag.query(user.client_id, text)
+    response = rag.query_2stage(user.client_id, text)
 
     return {"content": response["content"], "context": response["context"]}

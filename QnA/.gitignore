@@ -10,6 +10,7 @@ data/
 *.db
 *.sqlite
 *.sqlite3
+*.http
 
 
 # Byte-compiled / optimized / DLL files

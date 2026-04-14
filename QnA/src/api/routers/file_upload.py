@@ -47,8 +47,7 @@ def save_file(
     filename = Path(file.filename)
     filename = generate_filename(filename)
 
-    db_path = settings.OBJ_FILE_DB_PATH  # Path("data/user/file")
-    # db_path.mkdir(parents=True, exist_ok=True)
+    db_path = settings.OBJ_FILE_DB_PATH
 
     filepath = db_path / filename
     print(f"FILEPATH: {filepath.absolute()}")
